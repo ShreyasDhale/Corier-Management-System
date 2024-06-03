@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         if (filter_var($email, FILTER_VALIDATE_EMAIL) == true) {
             if ($sal > 2000) {
                 try {
-                    $st = $conn->prepare("insert into `staff`(email,name,password,user,branch_id,Salary) values('$email','$fname','$phone','$user','$br',$sal)");
+                    $st = $conn->prepare("insert into `staff`(email,name,cont,user,branch_id,Salary) values('$email','$fname','$phone','$user','$br',$sal)");
                     $st->execute();
                     $msg = "save";
                     include ("includes/success.php");
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             <form action="<?= $_SERVER['PHP_SELF']; ?>" method="POST">
 
                 <h1 style="font-family: arial;"><i class="fa-solid fa-users"></i> Add Staff</h1>
-                <h3 style="font-family: arial;">Corier Management System</h3>
+                <h3 style="font-family: arial;">Swift Dispatch</h3>
                 <img src="Images/logo2.png" style="height: 100px ;width: 100px; border-radius: 50%;"><br><br>
                 <?php if ($_SERVER['REQUEST_METHOD'] == "POST") if ($error != "") { ?>
                         <style>

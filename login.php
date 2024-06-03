@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     </button>
                 </div>
                 <h1 style="font-family: cursive;">ADMIN-Login</h1>
-                <h3 style="font-family: cursive;">Corier Management System</h3>
+                <h3 style="font-family: cursive;">Swift Dispatch</h3>
                 <img src="Images/logo2.png" style="height: 100px ;width: 100px; border-radius: 50%;"><br><br>
                 <h3 class="text-center" style="float: left;">Enter User Name</h3><input type="text" class="form-control"
                     style="font-size: medium" name=usr placeholder="abc@123" required><br>

@@ -39,6 +39,8 @@
 <body>
     <section class="container1">
         <?php
+        ob_start();
+
         include ("includes/header.php");
         include ("CalculateBill.php");
         if (isset($_POST['bt'])) {
@@ -61,6 +63,8 @@
             $to = $_POST['to'];
             $usrid = $_SESSION['adid'];
             $total = 0;
+            $current_bill = 0;
+            $ord_id = 0;
 
             if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 if (strcmp($saddr, $raddr) != 0) {
@@ -68,39 +72,83 @@
                         if (strcmp($scont, $rcont) != 0) {
                             if ($to != "Select" && $from != "Select") {
                                 if ($from != $to) {
-                                    for ($i = 0; $i < count($height); $i++)
-                                        $total += calculateBill($height[$i], $width[$i], $length[$i], $weight[$i], 200);
+                                    for ($i = 0; $i < count($height); $i++) {
+                                        $current_bill = calculateBill($height[$i], $width[$i], $length[$i], $weight[$i], 200);
+                                        $total += $current_bill;
+                                    }
                                     $_SESSION['bill'] = $total;
-                                    $st = $conn->prepare("insert into parcelform(sname,saddr,scont,rname,raddr,rcont,frombr,tobr,bill) values('$sname','$saddr',$scont,'$rname','$raddr',$rcont,'$from','$to',$total)");
-                                    if($st->execute()){
-                                    }else {
-                                        echo "".$conn->errorInfo();
+                                    $st = $conn->prepare("insert into parcelform(sname,saddr,scont,rname,raddr,rcont,frombr,tobr,bill) values(:sname,:saddr,:scont,:rname,:raddr,:rcont,:from,:to,:total)");
+                                    $st->bindParam(':sname', $sname);
+                                    $st->bindParam(':saddr', $saddr);
+                                    $st->bindParam(':scont', $scont);
+                                    $st->bindParam(':rname', $rname);
+                                    $st->bindParam(':raddr', $raddr);
+                                    $st->bindParam(':rcont', $rcont);
+                                    $st->bindParam(':from', $from);
+                                    $st->bindParam(':to', $to);
+                                    $st->bindParam(':total', $total);
+                                    if ($st->execute()) {
+                                        $ord_id = $conn->lastInsertId();
+                                        $_SESSION['parcels_id'] = $ord_id;
+                                    } else {
+                                        echo "" . $conn->errorInfo();
                                     }
                                     for ($i = 0; $i < count($height); $i++) {
                                         $track = rand(11111111, 99999999);
-                                        $stm = $conn->prepare("insert into parcel_info(sname,scont,rname,rcont,height,width,length,weight,cust_id,trackid,bdate,btime) values('$sname',$scont,'$rname',$rcont,$height[$i],$width[$i],$length[$i],$weight[$i],$usrid,$track,CURDATE(),CURRENT_TIMESTAMP(2))");
-                                        $stm->execute();
+                                        $current_bill = calculateBill($height[$i], $width[$i], $length[$i], $weight[$i], 200);
+                                        $stm = $conn->prepare("insert into parcel_info(sname,scont,rname,rcont,height,width,length,weight,cust_id,trackid,bdate,btime,price,order_id) values(:sname,:scont,:rname,:rcont,:height,:width,:length,:weight,:cust_id,:trackid,CURDATE(),CURRENT_TIMESTAMP(2),:price,:order_id)");
+                                        $stm->bindParam(':sname', $sname);
+                                        $stm->bindParam(':scont', $scont);
+                                        $stm->bindParam(':rname', $rname);
+                                        $stm->bindParam(':rcont', $rcont);
+                                        $stm->bindParam(':height', $height[$i]);
+                                        $stm->bindParam(':width', $width[$i]);
+                                        $stm->bindParam(':length', $length[$i]);
+                                        $stm->bindParam(':weight', $weight[$i]);
+                                        $stm->bindParam(':cust_id', $usrid);
+                                        $stm->bindParam(':trackid', $track);
+                                        $stm->bindParam(':price', $current_bill);
+                                        $stm->bindParam(':order_id', $ord_id);
+
+
+                                        if ($i == count($height) - 1) {
+                                            if ($stm->execute()) {
+                                                $height = [];
+                                                $width = [];
+                                                $length = [];
+                                                $weight = [];
+                                                header("location:PaymentGateway/paymentInfo.php");
+                                            } else {
+                                                print_r($conn->errorInfo());
+                                            }
+                                        } else {
+                                            if ($stm->execute()) {
+
+                                            } else {
+                                                print_r($conn->errorInfo());
+                                            }
+                                        }
                                     }
-                                    $height = array();
-                                    $width = array();
-                                    $length = array();
-                                    $weight = array();
-                                    $price = array();
-                                    $msg = "save";
-                                    include ("includes/success.php");
-                                } else
+
+
+                                } else {
                                     $error = "Destination Branch and Processing Branch Cannot be Same";
-                            } else
-                                $error = "Plese Select Branch";
-                        } else
+                                }
+                            } else {
+                                $error = "Please Select Branch";
+                            }
+                        } else {
                             $error = "Contact Number Cannot Be Same";
-                    } else
+                        }
+                    } else {
                         $error = "Phone Number Must Be of 10 Digits";
-                } else
+                    }
+                } else {
                     $error = "Parcel Cannot Be sent at Same Address";
+                }
             }
         }
-
+        ob_end_flush();
         ?>
     </section>
     <section class="container2">
@@ -138,30 +186,25 @@
                     <div class="row">
                         <div class="col">
                             <h3>Sender</h3>
-                            <h5 style="float: left;font-weight: bolder;">Name</h5>
                             <input type="text" value="<?php if ($_SERVER['REQUEST_METHOD'] == "POST")
                                 echo $sname ?>" placeholder="Sender Full Name" name="sname" class="form-control"
                                     required><br>
-                                <h5 style="float: left;font-weight: bolder;">Address</h5>
+
                                 <input type="text" value="<?php if ($_SERVER['REQUEST_METHOD'] == "POST")
                                 echo $saddr ?>" placeholder="Sender Address" name="saddr" class="form-control"
                                     required><br>
-                                <h5 style="float: left;font-weight: bolder;">#Contact</h5>
                                 <input type="number" value="<?php if ($_SERVER['REQUEST_METHOD'] == "POST")
                                 echo $scont ?>" placeholder="Sender Contact" name="scont" class="form-control"
                                     required><br>
                             </div>
                             <div class="col">
                                 <h3>Recipient</h3>
-                                <h5 style="float: left;font-weight: bolder;">Name</h5>
                                 <input type="text" value="<?php if ($_SERVER['REQUEST_METHOD'] == "POST")
                                 echo $rname ?>" placeholder="Reciever Full Name" name="rname" class="form-control"
                                     required><br>
-                                <h5 style="float: left;font-weight: bolder;">Address</h5>
                                 <input type="text" value="<?php if ($_SERVER['REQUEST_METHOD'] == "POST")
                                 echo $raddr ?>" placeholder="Reciever Address" name="raddr" class="form-control"
                                     required><br>
-                                <h5 style="float: left;font-weight: bolder;">#Contact</h5>
                                 <input type="Number" value="<?php if ($_SERVER['REQUEST_METHOD'] == "POST")
                                 echo $rcont ?>" placeholder="Reciever Contact" name="rcont" class="form-control"
                                     required><br>
@@ -169,10 +212,9 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                <h5 style="float: left;font-weight: bolder;">Pickup Branch</h5>
-                                <select name="from" class="form-control" value="<?php if ($_SERVER['REQUEST_METHOD'] == "POST")
+                                <select name="from" class="form-select" value="<?php if ($_SERVER['REQUEST_METHOD'] == "POST")
                                 echo $from ?>">
-                                    <option selected value="Select">Select Processing Branch</option>
+                                    <option selected value="Select">Select Pickup Branch</option>
                                     <?php
                             include ("includes/Connection.php");
                             $st = $conn->prepare("select city from branch");
@@ -184,11 +226,10 @@
                             ?>
                             </select>
                         </div>
-                    </div><br><br>
+                    </div><br>
                     <div class="row">
                         <div class="col">
-                            <h5 style="float: left;font-weight: bolder;">Pickup Branch</h5>
-                            <select name="to" class="form-control" value="<?php if ($_SERVER['REQUEST_METHOD'] == "POST")
+                            <select name="to" class="form-select" value="<?php if ($_SERVER['REQUEST_METHOD'] == "POST")
                                 echo $to ?>">
                                     <option selected value="Select">Select Pickup Branch</option>
                                     <?php

@@ -18,7 +18,8 @@
         .alert {
             display: none;
         }
-        .empty{
+
+        .empty {
             background-color: red;
             padding: 20px;
             margin: 20px;
@@ -90,6 +91,15 @@
         else if ($f == 5)
             echo "<font color=green>Delevered</font>";
     }
+
+    function payment_status($flg)
+    {
+        $f = $flg;
+        if ($f == 0)
+            echo "<font color=red>Not Paid</font>";
+        else
+            echo "<font color=green>PAID</font>";
+    }
     $rs1 = $conn->query("select id,trackid from parcel_info");
     if ($rs1->rowCount() > 0) { ?>
 
@@ -107,8 +117,9 @@
                                 <th>Sender Name</th>
                                 <th>Recipient Name</th>
                                 <th>Booked On</th>
-                                <th>Booked At</th>
+                                <th>Price</th>
                                 <th>Delavary Status</th>
+                                <th>Payment Status</th>
                                 <th>Tracking Id</th>
                                 <th>Cancel</th>
                                 <th>Track</th>
@@ -117,12 +128,13 @@
                         <tbody>
                             <?php
                             $id = $_SESSION['adid'];
-                            $rs = $conn->query("select id,sname,rname,cust_id,bdate,btime,trackid,flag from parcel_info where cust_id=$id");
+                            $rs = $conn->query("select id,sname,rname,cust_id,bdate,price,trackid,flag,is_paid from parcel_info where cust_id=$id");
                             $stat = "";
                             if (!$rs) {
                                 print_r($conn->errorInfo());
                             } else {
                                 while ($row = $rs->fetch()) {
+
                                     ?>
                                     <tr class=table-secondary>
                                         <td>
@@ -138,11 +150,16 @@
                                             <?= $row[4]; ?>
                                         </td>
                                         <td>
-                                            <?= $row[5]; ?>
+                                            <i class="fa fa-inr"></i><?= " " . $row[5]; ?>
                                         </td>
                                         <td>
                                             <strong>
                                                 <?php status($row[7]); ?>
+                                            </strong>
+                                        </td>
+                                        <td>
+                                            <strong>
+                                                <?php payment_status($row[8]); ?>
                                             </strong>
                                         </td>
                                         <td>
@@ -156,6 +173,7 @@
                                                         class="fa-brands fa-searchengin "></i></button></a></td>
                                     </tr>
                                     <?php
+
                                 }
                             }
     } else

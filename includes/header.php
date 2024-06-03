@@ -60,7 +60,7 @@
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href=<?php if($isAdmin) echo "AdminHome.php"; else echo"parcels.php"?>><img src="Images/logo1.png" style="height: 40px; width: 75px;">
-                &nbsp;<b><i>Corier Management System</i></b></a>
+                &nbsp;<b><i>Swift Dispatch</i></b></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
                 aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -85,6 +85,10 @@
                         <li class="nav-item">
                             <a class="nav-link" href="UserListParcel.php" style="font-size: 17px;"><i
                                     class="fa-solid fa-gauge"></i><strong> List Parcels </strong></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="parcels.php" style="font-size: 17px;"><i
+                                    class="nav-icon fas fa-boxes"></i><strong> Book Parcels </strong></a>
                         </li>
                     <?php } ?>
                     <li class="nav-item">

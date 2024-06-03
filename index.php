@@ -23,44 +23,36 @@
     }
 </style>
 <?php
-session_start();
+
 include ("initilize.php");
 include ("includes/Connection.php");
 
-$rs = $conn->query("SELECT id FROM `current_user`");
-if (!$rs) {
-    die("Error executing query: " . $conn->errorCode());
-}
+session_start();
 
-if ($rs->rowCount() > 0) {
-    while ($row = $rs->fetch()) {
+if (isset($_SESSION['usr']) && $_SESSION['usr'] != "") {
+    echo $_SESSION['usr'];
+    $userName = $_SESSION['usr'];
+    $rs1 = $conn->query("select id,email,password,user,isAdmin from login where user = '$userName'");
+    if (!$rs1) {
+        die("Error executing query: " . $conn->errorCode());
+    }
+    if ($rs1->rowCount() > 0) {
         echo $row[0];
-        if ($row[0] != NULL) {
-            echo $row[0];
-            $rs1 = $conn->query("select id,email,password,user,isAdmin from login where id = $row[0]");
-            if (!$rs1) {
-                die("Error executing query: " . $conn->errorCode());
-            }
-
-            if ($rs1->rowCount() > 0) {
-                echo $row[0];
-                while ($row = $rs1->fetch()) {
-                    if ($row[4] == 1) {
-                        $_SESSION['usr'] = $row[3];
-                        $_SESSION['adid'] = $row[0];
-                        header("location:AdminHome.php");
-                        exit;
-                    } else {
-                        $_SESSION['usr'] = $row[3];
-                        $_SESSION['adid'] = $row[0];
-                        header("location:parcels.php");
-                        exit;
-                    }
-                }
+        while ($row = $rs1->fetch()) {
+            if ($row[4] == 1) {
+                $_SESSION['usr'] = $row[3];
+                $_SESSION['adid'] = $row[0];
+                header("location:AdminHome.php");
+                exit();
             } else {
-                $error = " Invalid Email";
+                $_SESSION['usr'] = $row[3];
+                $_SESSION['adid'] = $row[0];
+                header("location:parcels.php");
+                exit();
             }
         }
+    } else {
+        $error = " Invalid Email";
     }
 }
 
@@ -68,8 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $error = "";
     $user = $_POST['usr'];
     $pass = $_POST['psw'];
-    setcookie('user', $user);
-    setcookie('pass', $pass);
 
     $rs = $conn->query("select id,email,password,user,isAdmin from login where user='$user'");
     if (!$rs) {
@@ -82,16 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 if (strcmp($row[2], $pass) == 0) {
                     $_SESSION['usr'] = $row[3];
                     $_SESSION['adid'] = $row[0];
-
-                    $insertQuery = $conn->prepare("INSERT INTO `current_user` (`id`) VALUES ($row[0]);");
-
-                    if ($insertQuery->execute()) {
-                        echo "Record inserted successfully!<br>";
-                    } else {
-                        echo "Error inserting record: " . $conn->errorCode() . "<br>";
-                    }
                     header("location:AdminHome.php");
-                    exit;
+                    exit();
                 } else {
                     $error = " Invalid Password";
                 }
@@ -99,16 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 if (strcmp($row[2], $pass) == 0) {
                     $_SESSION['usr'] = $row[3];
                     $_SESSION['adid'] = $row[0];
-
-                    $insertQuery = $conn->prepare("INSERT INTO `current_user` (`id`) VALUES ($row[0]);");
-
-                    if ($insertQuery->execute()) {
-                        echo "Record inserted successfully!<br>";
-                    } else {
-                        echo "Error inserting record: " . $conn->errorCode() . "<br>";
-                    }
                     header("location:parcels.php");
-                    exit;
+                    exit();
                 } else {
                     $error = " Invalid Password";
                 }
@@ -143,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     </button>
                 </div>
                 <h1 style="font-family: cursive;">Login</h1>
-                <h3 style="font-family: cursive;">Corier Management System</h3>
+                <h3 style="font-family: cursive;">Swift Dispatch</h3>
                 <img src="Images/logo2.png" style="height: 100px ;width: 100px; border-radius: 50%;"><br><br>
                 <h3 class="text-center" style="float: left;">Enter User Name</h3><input type="text" class="form-control"
                     style="font-size: medium" name=usr placeholder="abc@123" required><br>

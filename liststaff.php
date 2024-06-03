@@ -58,7 +58,8 @@
                 <table class="table table-bordered table-striped">
                     <?php
 
-                    $rs = $conn->query("select id,email,name,cont,user,branch_name,salary from staff");
+                    $rs = $conn->query("select id,email,name,cont,user,branch_id,salary from staff");
+
                     if ($rs->rowCount() > 0) {
                         echo "<tr class=table-primary>
                         <th>Staff Id</th>

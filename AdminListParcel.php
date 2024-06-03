@@ -40,8 +40,8 @@
 <body>
 
     <?php
-    include("includes/header.php");
-    include("includes/Connection.php");
+    include ("includes/header.php");
+    include ("includes/Connection.php");
     function status($flg)
     {
         $f = $flg;
@@ -58,11 +58,20 @@
         else if ($f == 5)
             echo "<font color=green>Delevered</font>";
     }
+
+    function payment_status($flg)
+    {
+        $f = $flg;
+        if ($f == 0)
+            echo "<font color=red>NOT PAID</font>";
+        else
+            echo "<font color=green>PAID</font>";
+    }
     $rs1 = $conn->query("select id,trackid from parcel_info");
     if ($rs1->rowCount() > 0) { ?>
 
         <center>
-            <div style="background-color: azure; width: 96%; padding: 10px">
+            <div style="background-color: azure; width: 96%; padding: 10px ;margin :20px">
                 <h1 style=" font-family: Arial; color: black;">
                     <b><i class="nav-icon fas fa-boxes"></i> Booked Parcels By Customers</b>
                 </h1>
@@ -71,19 +80,21 @@
                     <table class="table table-striped table-hover table-bordered" style="width: 99%;padding-top: 10px ;">
                         <thead>
                             <tr class=table-primary>
+                                <th>Order Number</th>
                                 <th>Parcel Id</th>
                                 <th>User Name</th>
                                 <th>Sender Contact</th>
                                 <th>Reciever Contact</th>
                                 <th>Booked On</th>
                                 <th>Booked At</th>
+                                <th>Payment Status</th>
                                 <th>Delavary Status</th>
                                 <th>Update Status By Referance Id</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            $rs = $conn->query("select id,scont,rcont,cust_id,bdate,btime,trackid,flag from parcel_info");
+                            $rs = $conn->query("select order_id,id,scont,rcont,cust_id,bdate,btime,trackid,flag,is_paid from parcel_info");
                             $stat = "";
                             while ($row = $rs->fetch()) {
                                 ?>
@@ -92,31 +103,39 @@
                                         <?= $row[0]; ?>
                                     </td>
                                     <td>
-                                        <?php $st=$conn->query("select user from login where id=$row[3]"); 
-                                            $name=$st->fetch();
-                                            echo $name[0]; 
-                                        ?>
+                                        <?= $row[1]; ?>
                                     </td>
                                     <td>
-                                        <?= $row[1]; ?>
+                                        <?php $st = $conn->query("select user from login where id=$row[4]");
+                                        $name = $st->fetch();
+                                        echo $name[0];
+                                        ?>
                                     </td>
                                     <td>
                                         <?= $row[2]; ?>
                                     </td>
                                     <td>
-                                        <?= $row[4]; ?>
+                                        <?= $row[3]; ?>
                                     </td>
                                     <td>
                                         <?= $row[5]; ?>
                                     </td>
                                     <td>
+                                        <?= $row[6]; ?>
+                                    </td>
+                                    <td>
                                         <strong>
-                                            <?php status($row[7]); ?>
+                                            <?php payment_status($row[9]); ?>
                                         </strong>
                                     </td>
-                                    <td align="center"><i class="fa-sharp fa-solid fa-pen-to-square "></i> Update <a href="#update"><input
-                                            type="button" class="btn btn-success" value="<?= $row[6] ?>" name=ref
-                                            onclick="display(this.value)"></a></td>
+                                    <td>
+                                        <strong>
+                                            <?php status($row[8]); ?>
+                                        </strong>
+                                    </td>
+                                    <td align="center"><i class="fa-sharp fa-solid fa-pen-to-square "></i> Update <a
+                                            href="#update"><input type="button" class="btn btn-success" value="<?= $row[7] ?>"
+                                                name=ref onclick="display(this.value)"></a></td>
                                 </tr>
                                 <?php
                             }
@@ -156,7 +175,8 @@
                         <option value="3">Arrived at Destination</option>
                         <option value="4">Out For Delevery</option>
                         <option value="5">Delevered</option>
-                    </select><br><div id="ans"></div>
+                    </select><br>
+                    <div id="ans"></div>
                     <input class="btn btn-success" type="button" name="sub" onclick="update(track.value,flg.value)"
                         value="Update" style="width: 40%;">
                     <input class="btn btn-warning" type="reset" value="Clear" style="width: 40%;"><br>
@@ -166,7 +186,7 @@
             </div>
         </center>
     </section>
-    <?php include("includes/footer.php"); ?>
+    <?php include ("includes/footer.php"); ?>
 </body>
 
 </html>

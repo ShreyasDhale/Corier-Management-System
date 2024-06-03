@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         <div class="login-form" style="width: 700px;">
             <form action="<?= $_SERVER['PHP_SELF']; ?>" method="post">
 
-                <h1 style="font-family: cursive;">Corier Management System</h1>
+                <h1 style="font-family: cursive;">Swift Dispatch</h1>
                 <h3 style="font-family: cursive;">ADMIN-Login</h3>
                 <img src="Images/logo2.png" style="height: 100px ;width: 100px; border-radius: 50%;"><br><br>
                 <h2 class="text-center">Create New Password</h2>

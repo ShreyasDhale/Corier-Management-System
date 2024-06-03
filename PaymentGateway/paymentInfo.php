@@ -60,7 +60,9 @@
         }
     </style>
 </head>
-
+ <?php 
+    session_start();
+ ?>
 <body>
 
     <div class="container">
@@ -78,7 +80,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="amount" class="form-label">Amount</label>
-                        <input type="number" name="amount" class="form-control" id="amount" name="amount" required>
+                        <input type="number" name="amount" value=<?= $_SESSION['bill']?> class="form-control" id="amount" name="amount" disabled>
                     </div>
                     <input type="submit" value="Pay Now" class="btn btn-primary btn-block">
                 </form>

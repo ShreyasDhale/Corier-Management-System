@@ -29,8 +29,8 @@
         <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"><i class="fab fa-linkedin-in"></i></a>
         <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"><i class="fab fa-github"></i></a>
         <br>
-        © 2023 Copyright:
-        <a class="text-white" href="" style="text-decoration: none;">(SD) Corier Management System</a>
+        © 2024 Copyright:
+        <a class="text-white" href="" style="text-decoration: none;">(ND) Swift Dispatch</a>
       </div>
     </footer>
   </div>

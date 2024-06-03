@@ -28,6 +28,7 @@ function init_database()
     create_PARCEL_FORM($conn);
     create_PARCEL_INFO($conn);
     create_STAFF($conn);
+    create_PAYMENT($conn);
 
     insertDATA($conn);
 
@@ -126,7 +127,8 @@ function create_PARCEL_FORM($conn)
         `rcont` bigint(11) NOT NULL,
         `frombr` varchar(45) NOT NULL,
         `tobr` varchar(45) NOT NULL,
-        `bill` int(11) NOT NULL
+        `bill` int(11) NOT NULL,
+        `is_paid` int DEFAULT 0
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
     if ($conn->query($sql_create_table) === TRUE) {
@@ -152,7 +154,10 @@ function create_PARCEL_INFO($conn)
         `bdate` date NOT NULL,
         `ddate` date DEFAULT NULL,
         `btime` time NOT NULL,
-        `dtime` time DEFAULT NULL
+        `dtime` time DEFAULT NULL,
+        `price` int NOT NULL,
+        `order_id` int NOT NULL,
+        `is_paid` int DEFAULT 0
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
     if ($conn->query($sql_create_table) === TRUE) {
@@ -172,6 +177,26 @@ function create_STAFF($conn)
         `Salary` int(11) NOT NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
       ";
+
+    if ($conn->query($sql_create_table) === TRUE) {
+    } else {
+        echo "Error creating table: " . $conn->error . "<br>";
+    }
+}
+
+function create_PAYMENT($conn)
+{
+    $sql_create_table = "CREATE TABLE IF NOT EXISTS `Swift_Dispatch`.`payments` (
+        `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        `order_id` int(11) NOT NULL,
+        `order_no` int(11) NOT NULL,
+        `username` varchar(60) NOT NULL,
+        `roz_id` varchar(60) NOT NULL,
+        `roz_signature` varchar(60) NOT NULL,
+        `roz_pay_id` varchar(60) NOT NULL,
+        `amount` int(11) NOT NULL
+
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 
     if ($conn->query($sql_create_table) === TRUE) {
     } else {

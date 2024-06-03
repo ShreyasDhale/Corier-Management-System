@@ -1,5 +1,5 @@
 <?php 
-define("BASE_URL","http://localhost/Payment%20Gateway/");
+define("BASE_URL","http://localhost/SwiftDispatch/PaymentGateway/");
 define("API_KEY","rzp_test_KThY34rGbT1d9W");
 define("API_SECRET","kNhyd1qv92EiRq91cyNdIF6J");
 define("COMPANY_NAME","Swift Dispatch");
