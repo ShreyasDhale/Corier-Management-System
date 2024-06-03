@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 <input type="submit" class="btn btn-primary btn-block" value="Login" style="width: 100%;"> <br>
                 <a href="email.php"
                     style="text-decoration: none; float: left; padding-top: 13px; font-size: 15px;">Forgot Password
-                    ?</a><br><br><a href="signup.php"
+                    ?</a><br><br><a href="userSignup.php"
                     style="text-decoration: none; float: left; font-size: 15px;">Signup ?
                 </a><br>
             </form>
