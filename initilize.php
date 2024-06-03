@@ -28,12 +28,10 @@ function init_database()
     create_PARCEL_FORM($conn);
     create_PARCEL_INFO($conn);
     create_STAFF($conn);
-    create_CURRENTUSER($conn);
 
     insertDATA($conn);
 
 }
-
 function insertDATA($conn)
 {
     $count = 1;
@@ -79,7 +77,6 @@ function insertDATA($conn)
 
     $conn->close();
 }
-
 function create_LOGIN($conn)
 {
     $sql_create_table = "CREATE TABLE IF NOT EXISTS `Swift_Dispatch`.`login` (
@@ -100,7 +97,6 @@ function create_LOGIN($conn)
         echo "Error creating table: " . $conn->error . "<br>";
     }
 }
-
 function create_BRANCH($conn)
 {
     $sql_create_table = "CREATE TABLE IF NOT EXISTS `Swift_Dispatch`.`branch` (
@@ -118,7 +114,6 @@ function create_BRANCH($conn)
         echo "Error creating table: " . $conn->error . "<br>";
     }
 }
-
 function create_PARCEL_FORM($conn)
 {
     $sql_create_table = "CREATE TABLE IF NOT EXISTS `Swift_Dispatch`.`parcelform` (
@@ -139,7 +134,6 @@ function create_PARCEL_FORM($conn)
         echo "Error creating table: " . $conn->error . "<br>";
     }
 }
-
 function create_PARCEL_INFO($conn)
 {
     $sql_create_table = "CREATE TABLE IF NOT EXISTS `Swift_Dispatch`.`parcel_info` (
@@ -166,7 +160,6 @@ function create_PARCEL_INFO($conn)
         echo "Error creating table: " . $conn->error . "<br>";
     }
 }
-
 function create_STAFF($conn)
 {
     $sql_create_table = "CREATE TABLE IF NOT EXISTS `Swift_Dispatch`.`staff` (
@@ -178,19 +171,6 @@ function create_STAFF($conn)
         `branch_id` varchar(50) NOT NULL,
         `Salary` int(11) NOT NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-      ";
-
-    if ($conn->query($sql_create_table) === TRUE) {
-    } else {
-        echo "Error creating table: " . $conn->error . "<br>";
-    }
-}
-
-function create_CURRENTUSER($conn)
-{
-    $sql_create_table = "CREATE TABLE IF NOT EXISTS `Swift_Dispatch`.`current_user` (
-        `id` int(50) PRIMARY KEY
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
       ";
 
     if ($conn->query($sql_create_table) === TRUE) {

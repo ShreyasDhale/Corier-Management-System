@@ -18,6 +18,19 @@
         .alert {
             display: none;
         }
+        .empty{
+            background-color: red;
+            padding: 20px;
+            margin: 20px;
+            position: relative;
+            align-content: center;
+            width: 30%;
+            border-radius: 20px;
+            color: white;
+            font-size: 20px;
+            font-weight: bolder;
+            font-family: sans-serif;
+        }
     </style>
     <script>
         function delet(track) {
@@ -146,7 +159,7 @@
                                 }
                             }
     } else
-        echo "No Parcels Found";
+        echo "<center><div class = 'empty'>No Parcels Found &#x1F601;</div></center>";
     echo "</tbody></table></div>";
     ?>
 
